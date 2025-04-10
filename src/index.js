@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
+import { App } from "./utils/App";
 
 const root = createRoot(document.getElementById("root"));
 
-root.render(<h1 className="text-5xl font-bold">Namaste React........</h1>)
+root.render(<App/>)

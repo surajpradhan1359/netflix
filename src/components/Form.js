@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
+import { checkValidData } from "../utils/validate";
 
 const Form = () => {
   const [isSigninForm, setIsSigninForm] = useState(true);
 
+  const [message,setMessage] = useState(null)
+
   const toogleClick = () => {
     setIsSigninForm(!isSigninForm);
   };
+
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleButtonClick=(e)=>{
+    e.preventDefault();
+    let validationMessage = checkValidData(email.current.value,password.current.value);
+      setMessage(validationMessage);
+  }
+
 
   return (
     <form className="bg-black opacity-80 rounded-lg p-2 sm:p-8 w-4/12 sigin_form mt-50">
@@ -15,6 +28,7 @@ const Form = () => {
       </h1>
       <input
         type="text"
+        ref={email}
         placeholder="Email or mobile number"
         className="px-2 py-3 border-white border rounded-xl text-white w-full mb-3"
       />
@@ -27,10 +41,12 @@ const Form = () => {
       )}
       <input
         type="password"
+        ref={password}
         placeholder="Password"
         className="px-2 py-3 border-white border rounded-xl text-white w-full mb-3"
       />
-      <button className="bg-red-700 text-white text-center rounded-xl w-full py-2 cursor-pointer mb-3">
+      {message != null && <p className="text-center text-lg text-red-500 mb-3 font-bold">{message}</p>}
+      <button className="bg-red-700 text-white text-center rounded-xl w-full py-2 cursor-pointer mb-3" onClick={handleButtonClick}>
         {isSigninForm ? "Sign in" : "Sign up"}
       </button>
       <p className="text-center uppercase text-lg text-white mb-3">or</p>

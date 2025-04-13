@@ -5,9 +5,9 @@ const Home = () => {
     let auth = false;
   return (
     <div>
-      {auth?<h1>Welcome Home</h1>:<Signin/>}
+      {auth?<h1 className='text-xl'>Welcome Home</h1>:<Signin/>}
     </div>
   )
 }
 
-export default Home
+export default Home;

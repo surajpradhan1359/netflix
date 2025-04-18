@@ -1,12 +1,29 @@
 import React, { useRef } from "react";
 import { useState } from "react";
 import { checkValidData } from "../utils/validate";
-import {createUser,signInUserFirebase} from '../utils/Firebase-config.js';
+import { app } from "../utils/Firebase-config.js";
+import { show } from "../utils/popupSlice.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile 
+} from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { updateAuth } from "../utils/authSlice.js";
+
+
 
 const Form = () => {
   const [isSigninForm, setIsSigninForm] = useState(true);
 
   const [message, setMessage] = useState(null);
+
+  const [fullname,setFullname] = useState("")
+
+  //navigate
+  const navigate = useNavigate();
 
   const toogleClick = () => {
     setIsSigninForm(!isSigninForm);
@@ -14,11 +31,14 @@ const Form = () => {
 
   //firebase createuser with email and password
 
+  //ref to the particular element
   const email = useRef(null);
   const password = useRef(null);
   const heading = useRef(null);
-
- 
+  //firebase auth
+  const auth = getAuth();
+  //Dispatch
+  const dispatch = useDispatch();
 
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -30,11 +50,54 @@ const Form = () => {
     //setting the state for validate message
     setMessage(validationMessage);
     //logic for firebase
-    if(validationMessage == null){
-      if(heading.current.innerText == "Sign up"){
-       createUser(email.current.value,password.current.value);
-      }else{
-        signInUserFirebase(email.current.value,password.current.value);
+    if (validationMessage == null) {
+      if (heading.current.innerText == "Sign up") {
+        //Sign up firebase callback function
+        createUserWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            // ...
+
+            return updateProfile(auth.currentUser, {
+              displayName: fullname, photoURL: "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+            });
+          }).then(()=>{
+            const {uid,email,displayName,photoURL} =auth.currentUser;
+            dispatch(updateAuth({email:email,uid:uid,displayName:displayName,photoURL:photoURL}))
+            dispatch(show("Signed up successfully"))
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+            dispatch(show('Unable to signup'))
+            console.log(error)
+          });
+      } else {
+        //firebase signIn promise
+        signInWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            // dispatch(updateAuth(user.uid));
+            dispatch(show("Logged in successfully"));
+            // ...
+          })
+          .catch((error) => {
+            console.log('the error obj is',error)
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode,' ',errorMessage);
+          });
       }
     }
   };
@@ -54,6 +117,9 @@ const Form = () => {
         <input
           type="text"
           placeholder="Full name"
+          onChange={(e)=>{
+            setFullname(e.target.value)
+          }}
           className="px-2 py-3 border-white border rounded-xl text-white w-full mb-3"
         />
       )}

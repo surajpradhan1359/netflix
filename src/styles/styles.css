@@ -6,3 +6,16 @@
     left: 50%;
     transform: translate(-50%);
 }
+
+.popup{
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%);
+    transition: 0.5s ease-in;
+}
+.popup_active{
+    bottom: 10px;
+}
+.popup_inactive{
+    bottom: -100px;
+}

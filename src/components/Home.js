@@ -1,13 +1,32 @@
-import React from 'react';
-import { Signin } from './Signin';
+import React, { useEffect } from "react";
+import { Signin } from "./Signin";
+import { useNavigate } from "react-router";
+import {  useSelector } from "react-redux";
+// import LoadingCircleSpinner from './Loader';
 
-const Home = () => {
-    let auth = false;
+const User = () => {
+  //navigate
+  let navigate = useNavigate();
+  //subscribing to the redux store
+  let user = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user != null) {
+      navigate("/browse");
+    }
+  }, [user]);
+
   return (
     <div>
-      {auth?<h1 className='text-xl'>Welcome Home</h1>:<Signin/>}
+      {user != null ? (
+        <div className="bg-black pt-10 h-[100vh]">
+          <h3 className="text-center text-4xl text-pink-600 ">Loading....</h3>
+        </div>
+      ) : (
+        <Signin />
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Home;
+export default User;

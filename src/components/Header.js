@@ -39,7 +39,7 @@ export const Header = () => {
 
   return (
     <div
-      className="absolute top-0 px-6 py-2 z-30 flex justify-between items-center"
+      className="absolute top-0 px-6 py-2 z-50 flex justify-between items-center"
       style={{ width: "100%" }}
     >
       <img src={logoUrl} alt="noImage" loading="lazy" className="w-48" />

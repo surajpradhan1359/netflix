@@ -10,3 +10,11 @@
 - GPT
   - Search Bar
   - Suggestion
+
+# Browse page design
+
+- Hero Section
+  - Header(This should be positioned top of the background video)
+  - div for background video
+  - Heading(Tittle)
+  - two buttons (play,more info)
